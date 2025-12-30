@@ -54,6 +54,13 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
     onUpdateTable(table.id, { items: updatedItems });
   };
 
+  const updateItemText = (itemId: string, text: string) => {
+    const updatedItems = table.items.map((item) =>
+      item.id === itemId ? { ...item, text } : item
+    );
+    onUpdateTable(table.id, { items: updatedItems });
+  };
+
   const handleDeleteTable = () => {
     if (window.confirm(`Are you sure you want to delete "${table.name}"? This action cannot be undone.`)) {
       onDeleteTable(table.id);
@@ -160,6 +167,7 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
               onToggle={toggleItem}
               onDelete={deleteItem}
               onUpdateAmount={updateItemAmount}
+              onUpdateText={updateItemText}
             />
           ))
         )}
