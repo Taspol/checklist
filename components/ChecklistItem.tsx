@@ -20,7 +20,7 @@ export default function ChecklistItem({ item, onToggle, onDelete, onUpdateAmount
         className="w-6 h-6 sm:w-6 sm:h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer flex-shrink-0"
       />
       <span
-        className={`flex-1 text-sm sm:text-base text-gray-800 break-words min-w-0 ${
+        className={`flex-1 text-base sm:text-lg text-gray-800 break-words min-w-0 ${
           item.isChecked ? 'line-through text-gray-400' : ''
         }`}
       >
