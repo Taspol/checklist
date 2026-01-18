@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChecklistTable as ChecklistTableType } from '@/app/types';
 import ChecklistItem from './ChecklistItem';
-import { Plus, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Trash2, Eye, EyeOff, Edit2 } from 'lucide-react';
 
 interface ChecklistTableProps {
   table: ChecklistTableType;
@@ -17,6 +17,8 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
   const [newItemText, setNewItemText] = useState('');
   const [newItemAmount, setNewItemAmount] = useState('1');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [editedName, setEditedName] = useState(table.name);
 
   const addItem = () => {
     if (newItemText.trim()) {
@@ -67,6 +69,15 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
     }
   };
 
+  const handleRename = () => {
+    if (editedName.trim() && editedName.trim() !== table.name) {
+      onUpdateTable(table.id, { name: editedName.trim() });
+    } else {
+      setEditedName(table.name);
+    }
+    setIsRenaming(false);
+  };
+
   const completedCount = table.items.filter((item) => item.isChecked).length;
   const totalCount = table.items.length;
 
@@ -78,16 +89,54 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
         isFocused ? 'mb-4' : 'mb-0'
       }`}>
         <div 
-          className="flex-1 min-w-0 cursor-pointer"
-          onClick={() => !isFocused && onToggleFocus(table.id)}
+          className="flex-1 min-w-0"
         >
-          <h2 className={`font-bold text-gray-800 truncate ${
-            isFocused ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'
-          }`}>{table.name}</h2>
-          {totalCount > 0 && (
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              {completedCount} of {totalCount} completed
-            </p>
+          {isRenaming ? (
+            <input
+              type="text"
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+              onBlur={handleRename}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') handleRename();
+                if (e.key === 'Escape') {
+                  setEditedName(table.name);
+                  setIsRenaming(false);
+                }
+              }}
+              className={`font-bold text-gray-800 w-full px-2 py-1 border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                isFocused ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'
+              }`}
+              autoFocus
+            />
+          ) : (
+            <div 
+              className="cursor-pointer"
+              onClick={() => !isFocused && onToggleFocus(table.id)}
+            >
+              <div className="flex items-center gap-2 group/title">
+                <h2 className={`font-bold text-gray-800 truncate ${
+                  isFocused ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'
+                }`}>{table.name}</h2>
+                {isFocused && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsRenaming(true);
+                    }}
+                    className="opacity-100 sm:opacity-0 sm:group-hover/title:opacity-100 text-gray-400 hover:text-blue-600 active:text-blue-700 transition-opacity flex-shrink-0"
+                    aria-label="Rename table"
+                  >
+                    <Edit2 size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  </button>
+                )}
+              </div>
+              {totalCount > 0 && (
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  {completedCount} of {totalCount} completed
+                </p>
+              )}
+            </div>
           )}
         </div>
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
