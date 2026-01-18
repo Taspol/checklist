@@ -71,10 +71,19 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
   const totalCount = table.items.length;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 truncate">{table.name}</h2>
+    <div className={`bg-white rounded-xl shadow-lg border border-gray-100 transition-all ${
+      isFocused ? 'p-4 sm:p-6' : 'p-3 sm:p-4'
+    }`}>
+      <div className={`flex items-center justify-between ${
+        isFocused ? 'mb-4' : 'mb-0'
+      }`}>
+        <div 
+          className="flex-1 min-w-0 cursor-pointer"
+          onClick={() => !isFocused && onToggleFocus(table.id)}
+        >
+          <h2 className={`font-bold text-gray-800 truncate ${
+            isFocused ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'
+          }`}>{table.name}</h2>
           {totalCount > 0 && (
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
               {completedCount} of {totalCount} completed
@@ -103,6 +112,8 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
         </div>
       </div>
 
+      {isFocused && (
+        <>
       <div className="mb-4">
         {!showAddForm ? (
           <button
@@ -172,6 +183,8 @@ export default function ChecklistTable({ table, onUpdateTable, onDeleteTable, on
           ))
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }
