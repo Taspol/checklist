@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   // Allow development from local network
   allowedDevOrigins: ["*"],
+  // Ignore data folder to prevent refresh when tables.json changes
+  watchOptions: {
+    ignored: ['**/data/**', '**/node_modules/**', '**/.git/**'],
+  },
 };
 
 export default nextConfig;
